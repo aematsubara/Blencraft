@@ -71,7 +71,7 @@ public final class GUI implements InventoryHolder, Listener {
 
     public final static ItemStack DUPLICATE_SELECTION =
             new ItemBuilder("SLIME_BALL")
-                    .setDisplayName("&5Duplicate selection")
+                    .setDisplayName("&5Duplicate selection(s)")
                     .build();
 
     public final static ItemStack SEARCH =
@@ -95,6 +95,10 @@ public final class GUI implements InventoryHolder, Listener {
                     .build();
 
     public GUI(JavaPlugin plugin, Model model, @Nullable String keyword) {
+        this(plugin, model, keyword, 0);
+    }
+
+    public GUI(JavaPlugin plugin, Model model, @Nullable String keyword, int current) {
         this.plugin = (BlencraftPlugin) plugin;
         this.player = model.getBuilder();
         this.inventory = plugin.getServer().createInventory(this, 54);
@@ -103,6 +107,7 @@ public final class GUI implements InventoryHolder, Listener {
         this.stands = new ArrayList<>(model.getStands().values());
 
         this.keyword = keyword;
+        this.current = current;
 
         if (keyword != null && !keyword.isEmpty()) {
             stands.removeIf(stand -> !model.getNameOf(stand).toLowerCase().contains(keyword.toLowerCase()));
@@ -188,8 +193,10 @@ public final class GUI implements InventoryHolder, Listener {
                             "&6Click to select part.",
                             "&6Right click to edit part.",
                             "&7",
-                            "&6Shift click to delete this part.",
-                            "&6Shift right click to duplicate this part."))
+                            "&6Shift left click to swap to the left.",
+                            "&6Shift right click to swap to the right.",
+                            "&7",
+                            "&cDrop to delete."))
                     .modifyNBT("standId", stand.getEntityId())
                     .build());
         }
@@ -223,6 +230,14 @@ public final class GUI implements InventoryHolder, Listener {
         // Go to the next page.
         current++;
         updateInventory();
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public int getCurrent() {
+        return current;
     }
 
     @Override

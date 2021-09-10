@@ -2,11 +2,14 @@ package me.matsubara.blencraft.manager;
 
 import me.matsubara.blencraft.BlencraftPlugin;
 import me.matsubara.blencraft.model.Model;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public final class ModelManager {
@@ -19,8 +22,10 @@ public final class ModelManager {
         this.models = new ArrayList<>();
     }
 
-    public void newModel(Model model) {
+    public UUID newModel(@Nullable Player builder, String fileName, @Nullable String fileFolder, Location center, float yaw) {
+        Model model = new Model(plugin, builder, fileName, fileFolder, center, yaw);
         models.add(model);
+        return model.getUniqueId();
     }
 
     public boolean isBuilding(Player player) {
@@ -29,6 +34,13 @@ public final class ModelManager {
             if (model.getBuilder().equals(player)) return true;
         }
         return false;
+    }
+
+    public Model getModel(UUID uuid) {
+        for (Model model : models) {
+            if (model.getUniqueId().equals(uuid)) return model;
+        }
+        return null;
     }
 
     public Model getModel(Player player) {

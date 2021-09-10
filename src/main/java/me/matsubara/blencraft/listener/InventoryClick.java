@@ -134,7 +134,15 @@ public final class InventoryClick implements Listener {
         } else if (current.isSimilar(GUI.CLOSE)) {
             plugin.getServer().getScheduler().runTask(plugin, player::closeInventory);
         } else if (current.isSimilar(GUI.DUPLICATE_SELECTION)) {
-            if (model.getCurrentIds().size() > 1) {
+            if (model.getCurrentIds().size() > 0) {
+                if (model.getCurrentIds().size() == 1) {
+                    // Duplicate single.
+                    PacketStand stand = model.getById(model.getCurrentIds().get(0));
+                    if (stand != null) openAnvilGUI(player, model, stand);
+                    event.setCancelled(true);
+                    return;
+                }
+
                 // Create a copy before clearing selections.
                 List<Integer> copy = new ArrayList<>(model.getCurrentIds());
 
@@ -152,7 +160,7 @@ public final class InventoryClick implements Listener {
                 model.getTemp().clear();
                 player.sendMessage(ChatColor.GOLD + "Selected parts duplicated and selected!");
             } else {
-                player.sendMessage(ChatColor.RED + "You need to select at least 2 stands to use this option!");
+                player.sendMessage(ChatColor.RED + "You need to select at least 1 stand to use this option!");
             }
             plugin.getServer().getScheduler().runTask(plugin, player::closeInventory);
         } else if (current.getType() == Material.ARMOR_STAND) {
@@ -205,13 +213,56 @@ public final class InventoryClick implements Listener {
                 // Settings.
                 new SettingsGUI(player, stand);
             } else if (event.getClick() == ClickType.SHIFT_LEFT) {
+                String currentName = model.getNameOf(stand);
+
+                List<String> keys = new ArrayList<>(model.getStands().keySet());
+
+                int indexof = keys.indexOf(currentName);
+                // First.
+                if (indexof == 0) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                Collections.swap(keys, indexof, indexof - 1);
+
+                for (String key : keys) {
+                    model.getTemp().put(key, model.getStands().get(key));
+                }
+
+                model.getStands().clear();
+                model.getStands().putAll(model.getTemp());
+                model.getTemp().clear();
+
+                new GUI(plugin, model, gui.getKeyword(), gui.getCurrent());
+            } else if (event.getClick() == ClickType.SHIFT_RIGHT) {
+                String currentName = model.getNameOf(stand);
+
+                List<String> keys = new ArrayList<>(model.getStands().keySet());
+
+                int indexof = keys.indexOf(currentName);
+                // Last.
+                if (indexof == keys.size() - 1) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                Collections.swap(keys, indexof, indexof + 1);
+
+                for (String key : keys) {
+                    model.getTemp().put(key, model.getStands().get(key));
+                }
+
+                model.getStands().clear();
+                model.getStands().putAll(model.getTemp());
+                model.getTemp().clear();
+
+                new GUI(plugin, model, gui.getKeyword(), gui.getCurrent());
+            } else if (event.getClick().name().contains("DROP")) {
                 // Delete.
                 model.delete(stand);
                 player.sendMessage(ChatColor.GOLD + "Part deleted.");
                 plugin.getServer().getScheduler().runTask(plugin, player::closeInventory);
-            } else if (event.getClick() == ClickType.SHIFT_RIGHT) {
-                // Duplicate.
-                openAnvilGUI(player, model, stand);
             }
         }
 

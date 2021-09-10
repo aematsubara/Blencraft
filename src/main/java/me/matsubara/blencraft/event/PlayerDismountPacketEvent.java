@@ -9,7 +9,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
-public final class PlayerDismountEvent extends Event implements Cancellable {
+public final class PlayerDismountPacketEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
@@ -19,7 +19,7 @@ public final class PlayerDismountEvent extends Event implements Cancellable {
 
     private boolean cancelled;
 
-    public PlayerDismountEvent(Player player, PacketStand stand, Model model) {
+    public PlayerDismountPacketEvent(Player player, PacketStand stand, Model model) {
         super(true);
         this.player = player;
         this.stand = stand;

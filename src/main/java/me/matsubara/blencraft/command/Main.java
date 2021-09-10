@@ -239,7 +239,7 @@ public final class Main implements CommandExecutor, TabCompleter {
 
         setHotbarItems(player);
 
-        plugin.getModelManager().newModel(new Model(plugin, player, modelName, null, center, player.getLocation().getYaw()));
+        plugin.getModelManager().newModel(player, modelName, null, center, player.getLocation().getYaw());
     }
 
     public void setHotbarItems(Player player) {
@@ -250,7 +250,6 @@ public final class Main implements CommandExecutor, TabCompleter {
         inventory.setItem(2, ROTATION);
         inventory.setItem(3, TYPE);
         inventory.setItem(4, SPEED);
-        // 5 - EMPTY
         inventory.setItem(6, X_AXIS);
         inventory.setItem(7, Y_AXIS);
         inventory.setItem(8, Z_AXIS);

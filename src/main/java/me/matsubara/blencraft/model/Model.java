@@ -44,6 +44,9 @@ public final class Model {
     // The player that is building this model, if so.
     private Player builder;
 
+    // The UUID of this model.
+    private final UUID modelUniqueId;
+
     // Name of the model.
     private final String name;
 
@@ -69,18 +72,11 @@ public final class Model {
     private File file;
     private FileConfiguration configuration;
 
-    public Model(BlencraftPlugin plugin, String name, Location center, float yaw) {
-        this(plugin, null, name, null, center, yaw);
-    }
-
-    public Model(BlencraftPlugin plugin, String name, @Nullable String folder, Location center, float yaw) {
-        this(plugin, null, name, folder, center, yaw);
-    }
-
-    public Model(BlencraftPlugin plugin, @Nullable Player builder, String name, @Nullable String folder, Location center, float yaw) {
+    public Model(BlencraftPlugin plugin, @Nullable Player builder, String fileName, @Nullable String fileFolder, Location center, float yaw) {
         this.plugin = plugin;
         this.builder = builder;
-        this.name = name;
+        this.modelUniqueId = UUID.randomUUID();
+        this.name = fileName;
 
         this.center = center;
         this.center.setDirection(PluginUtils.getDirection(PluginUtils
@@ -93,7 +89,7 @@ public final class Model {
         this.currentIds = new ArrayList<>();
         this.speed = 0.05d;
         this.rotation = RotationType.POSITION;
-        loadFile(folder);
+        loadFile(fileFolder);
         loadModel();
         if (builder != null) startActionBar();
     }
@@ -263,10 +259,6 @@ public final class Model {
         return true;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public Map<String, PacketStand> getStands() {
         return stands;
     }
@@ -276,7 +268,6 @@ public final class Model {
     }
 
     public List<Integer> getCurrentIds() {
-        //plugin.getLogger().info(currentIds.stream().map(String::valueOf).collect(Collectors.joining(",")));
         return currentIds;
     }
 
@@ -368,7 +359,7 @@ public final class Model {
         }
     }
 
-    public void loadModel() {
+    private void loadModel() {
         ConfigurationSection section = configuration.getConfigurationSection("parts");
         if (section == null) return;
 
@@ -480,7 +471,7 @@ public final class Model {
         setRotation(RotationType.values()[index]);
     }
 
-    public ItemStack loadEquipment(String path, String equipment) {
+    private ItemStack loadEquipment(String path, String equipment) {
         String defaultPath = "parts." + path + ".equipment." + equipment;
         if (configuration.get(defaultPath) == null) return null;
 
@@ -501,7 +492,7 @@ public final class Model {
         return null;
     }
 
-    public EulerAngle loadAngle(String path, String pose) {
+    private EulerAngle loadAngle(String path, String pose) {
         String defaultPath = "parts." + path + ".pose.";
 
         if (configuration.get(defaultPath + pose) != null) {
@@ -644,6 +635,10 @@ public final class Model {
 
     public Location getCenter() {
         return center;
+    }
+
+    public UUID getUniqueId() {
+        return modelUniqueId;
     }
 
     public PacketStand getByName(String name) {

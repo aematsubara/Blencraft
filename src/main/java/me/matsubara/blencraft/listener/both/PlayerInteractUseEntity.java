@@ -8,9 +8,11 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.cryptomorin.xseries.ReflectionUtils;
 import me.matsubara.blencraft.BlencraftPlugin;
 import me.matsubara.blencraft.command.Main;
+import me.matsubara.blencraft.event.PlayerInteractPacketEvent;
 import me.matsubara.blencraft.gui.GUI;
 import me.matsubara.blencraft.model.Model;
 import me.matsubara.blencraft.model.stand.StandSettings;
+import me.matsubara.blencraft.stand.PacketStand;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -43,17 +45,37 @@ public final class PlayerInteractUseEntity extends PacketAdapter implements List
             action = event.getPacket().getEntityUseActions().read(0);
         }
 
+        int entityId = event.getPacket().getIntegers().read(0);
+        boolean leftClick = action == EnumWrappers.EntityUseAction.ATTACK;
+
         Player player = event.getPlayer();
-        if (!plugin.getModelManager().isBuilding(player)) return;
+
+        // Only call interact packet event if the player isn't building.
+        if (!plugin.getModelManager().isBuilding(player)) {
+
+            for (Model model : plugin.getModelManager().getModels()) {
+                PacketStand stand = model.getById(entityId);
+                if (stand == null) continue;
+
+                PlayerInteractPacketEvent interactEvent = new PlayerInteractPacketEvent(
+                        player,
+                        stand,
+                        model,
+                        PlayerInteractPacketEvent.InteractType.getByBoolean(leftClick));
+
+                plugin.getServer().getPluginManager().callEvent(interactEvent);
+                return;
+            }
+
+            return;
+        }
 
         Model model = plugin.getModelManager().getModel(player);
         if (model == null) return;
-
-        int entityId = event.getPacket().getIntegers().read(0);
         if (model.getById(entityId) == null) return;
 
         // For some reason, when left cliking a packet entity calls PlayerInteractEvent, but not when right cliking.
-        if (action == EnumWrappers.EntityUseAction.ATTACK) return;
+        if (leftClick) return;
 
         @SuppressWarnings("deprecation") ItemStack item = event.getPlayer().getItemInHand();
         if (item.getType() == Material.AIR) return;

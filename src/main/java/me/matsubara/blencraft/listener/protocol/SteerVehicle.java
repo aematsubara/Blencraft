@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import me.matsubara.blencraft.BlencraftPlugin;
-import me.matsubara.blencraft.event.PlayerDismountEvent;
+import me.matsubara.blencraft.event.PlayerDismountPacketEvent;
 import me.matsubara.blencraft.model.Model;
 import me.matsubara.blencraft.stand.PacketStand;
 import org.bukkit.entity.Player;
@@ -34,7 +34,7 @@ public final class SteerVehicle extends PacketAdapter {
         for (Model model : plugin.getModelManager().getModels()) {
             for (PacketStand stand : model.getStands().values()) {
                 if (dismount && stand.isPassenger(player)) {
-                    PlayerDismountEvent dismountEvent = new PlayerDismountEvent(player, stand, model);
+                    PlayerDismountPacketEvent dismountEvent = new PlayerDismountPacketEvent(player, stand, model);
                     plugin.getServer().getPluginManager().callEvent(dismountEvent);
                     if (!dismountEvent.isCancelled()) stand.setPassenger(null);
                     break models;
