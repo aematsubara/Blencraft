@@ -31,6 +31,7 @@ public final class StandManager implements Listener {
 
         for (Model model : plugin.getModelManager().getModels()) {
             for (PacketStand stand : model.getStands().values()) {
+
                 Location standLocation = stand.getLocation();
                 if (standLocation.getWorld() == null || !standLocation.getWorld().equals(player.getWorld())) continue;
 
@@ -48,6 +49,7 @@ public final class StandManager implements Listener {
 
         for (Model model : plugin.getModelManager().getModels()) {
             for (PacketStand stand : model.getStands().values()) {
+
                 Location standLocation = stand.getLocation();
                 if (standLocation.getWorld() == null || !standLocation.getWorld().equals(player.getWorld())) continue;
 

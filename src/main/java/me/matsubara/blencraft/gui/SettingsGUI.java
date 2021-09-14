@@ -52,12 +52,20 @@ public final class SettingsGUI implements InventoryHolder {
             .setDisplayName("&3Sit")
             .build();
 
+    public final static ItemStack CUSTOM_NAME = new ItemBuilder("NAME_TAG")
+            .setDisplayName("&1Custom name")
+            .build();
+
+    public final static ItemStack CUSTOM_NAME_VISIBLE = new ItemBuilder("LEVER")
+            .setDisplayName("&5Custom name visible")
+            .build();
+
     public final static ItemStack CLOSE = new ItemBuilder("BARRIER")
             .setDisplayName("&4Close")
             .build();
 
     public SettingsGUI(Player player, @Nullable PacketStand stand) {
-        this.inventory = Bukkit.createInventory(this, 9, "Settings".concat(stand != null ? "" : " (Multiple)"));
+        this.inventory = Bukkit.createInventory(this, 18, "Settings".concat(stand != null ? "" : " (Multiple)"));
         this.inventory.setItem(0, EQUIPMENT);
         this.inventory.setItem(1, INVISIBLE);
         this.inventory.setItem(2, ARMS);
@@ -67,6 +75,8 @@ public final class SettingsGUI implements InventoryHolder {
         this.inventory.setItem(6, FIRE);
         this.inventory.setItem(7, MOUNT);
         this.inventory.setItem(8, CLOSE);
+        this.inventory.setItem(9, CUSTOM_NAME);
+        this.inventory.setItem(10, CUSTOM_NAME_VISIBLE);
         this.stand = stand;
         player.openInventory(inventory);
     }

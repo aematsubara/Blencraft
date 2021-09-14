@@ -3,9 +3,9 @@ package me.matsubara.blencraft.stand;
 import com.cryptomorin.xseries.ReflectionUtils;
 import me.matsubara.blencraft.BlencraftPlugin;
 import me.matsubara.blencraft.model.stand.StandSettings;
+import me.matsubara.blencraft.util.PluginUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -415,15 +415,16 @@ public final class PacketStand {
         }
     }
 
-    public void changeCustomName(String name) {
-        setCustomName(name);
-        updateMetadata();
-    }
-
-    public void setCustomName(String name) {
+    public void setCustomName(@Nullable String name) {
         try {
-            name = ChatColor.translateAlternateColorCodes('&', name);
-            setCustomName.invoke(stand, isMoreThan12 ? fromStringOrNull.invoke(null, name) : name);
+            if (name != null) {
+                name = PluginUtils.translate(name);
+                name = isMoreThan12 ? (String) fromStringOrNull.invoke(null, name) : name;
+            } else {
+                name = "";
+                setCustomNameVisible(false);
+            }
+            setCustomName.invoke(stand, name);
             settings.setCustomName(name);
         } catch (ReflectiveOperationException exception) {
             exception.printStackTrace();
@@ -665,6 +666,10 @@ public final class PacketStand {
         } catch (ReflectiveOperationException exception) {
             exception.printStackTrace();
         }
+    }
+
+    public Object getHandle() {
+        return stand;
     }
 
     public boolean isIgnored(Player player) {

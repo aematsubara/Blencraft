@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public final class Model {
@@ -161,8 +162,10 @@ public final class Model {
             configuration.set("parts." + name + ".settings.fire", settings.isOnFire());
             configuration.set("parts." + name + ".settings.marker", settings.isMarker());
             configuration.set("parts." + name + ".settings.glow", settings.isGlowing());
+
+            // Not saved if null.
             configuration.set("parts." + name + ".settings.custom-name", settings.getCustomName());
-            configuration.set("parts." + name + ".settings.custom-name-visible", settings.isCustomNameVisible());
+            configuration.set("parts." + name + ".settings.custom-name-visible", settings.getCustomName() == null ? null : settings.isCustomNameVisible());
 
             // Save euler angles.
             saveAngle(name, "head", settings.getHeadPose());

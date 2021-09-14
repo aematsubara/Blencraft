@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
 
 public final class InventoryClose implements Listener {
@@ -33,9 +34,12 @@ public final class InventoryClose implements Listener {
         if (inventory.getHolder() instanceof EquipmentGUI) {
             runTask(() -> new SettingsGUI(player, ((EquipmentGUI) inventory.getHolder()).getStand()));
         } else if (inventory.getHolder() instanceof SettingsGUI) {
+            SettingsGUI gui = (SettingsGUI) inventory.getHolder();
+
             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                 Inventory top = player.getOpenInventory().getTopInventory();
-                if (top.getHolder() != null && top.getHolder() instanceof EquipmentGUI) return;
+                if (top instanceof AnvilInventory || top.getHolder() != null && top.getHolder() instanceof EquipmentGUI) return;
+                if (gui.getStand() != null && gui.getStand().hasPassenger()) return;
 
                 Model model = plugin.getModelManager().getModel(player);
                 if (model != null) runTask(() -> new GUI(plugin, model, null));

@@ -305,12 +305,40 @@ public final class InventoryClick implements Listener {
             }
             plugin.getServer().getScheduler().runTask(plugin, player::closeInventory);
             event.setCancelled(true);
+            return;
         } else if (current.isSimilar(SettingsGUI.CLOSE)) {
             plugin.getServer().getScheduler().runTask(plugin, player::closeInventory);
             event.setCancelled(true);
             return;
+        } else if (current.isSimilar(SettingsGUI.CUSTOM_NAME)) {
+            if (stand != null) {
+                new AnvilGUI.Builder()
+                        .title("Set custom name")
+                        .itemLeft(new ItemStack(Material.PAPER))
+                        .text("Name...")
+                        .onComplete((opener, text) -> {
+                            if (text.equalsIgnoreCase("none")) {
+                                player.sendMessage(ChatColor.RED + "Custom name removed!");
+                                stand.setCustomName(null);
+                            } else {
+                                player.sendMessage(ChatColor.GOLD + "Changed custom name!");
+                                stand.setCustomName(text);
+                            }
+                            stand.updateMetadata();
+
+                            return AnvilGUI.Response.close();
+                        })
+                        .plugin(plugin)
+                        .open(player);
+            } else {
+                player.sendMessage(ChatColor.RED + "Can't set custom name with multiple selection.");
+                plugin.getServer().getScheduler().runTask(plugin, player::closeInventory);
+            }
+            event.setCancelled(true);
+            return;
+        } else if (current.isSimilar(SettingsGUI.CUSTOM_NAME_VISIBLE)) {
+            handleEquipment(model, PacketStand::toggleCustomNameVisibility, stand);
         } else {
-            // Shouldn't be called since every slot is used.
             event.setCancelled(true);
             return;
         }
