@@ -26,7 +26,11 @@ public final class ModelManager {
     }
 
     public UUID newModel(@Nullable Player builder, String fileName, @Nullable String fileFolder, Location center, float yaw) {
-        Model model = new Model(plugin, builder, fileName, fileFolder, center, yaw);
+        return newModel(builder, fileName, null, fileFolder, center, yaw);
+    }
+
+    public UUID newModel(@Nullable Player builder, String fileName, @Nullable UUID oldUniqueId, @Nullable String fileFolder, Location center, float yaw) {
+        Model model = new Model(plugin, builder, fileName, oldUniqueId, fileFolder, center, yaw);
         models.add(model);
         return model.getUniqueId();
     }

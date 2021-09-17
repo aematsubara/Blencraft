@@ -73,9 +73,13 @@ public final class Model {
     private FileConfiguration configuration;
 
     public Model(BlencraftPlugin plugin, @Nullable Player builder, String fileName, @Nullable String fileFolder, Location center, float yaw) {
+        this(plugin, builder, fileName, null, fileFolder, center, yaw);
+    }
+
+    public Model(BlencraftPlugin plugin, @Nullable Player builder, String fileName, @Nullable UUID oldUniqueId, @Nullable String fileFolder, Location center, float yaw) {
         this.plugin = plugin;
         this.builder = builder;
-        this.modelUniqueId = UUID.randomUUID();
+        this.modelUniqueId = (oldUniqueId != null) ? oldUniqueId : UUID.randomUUID();
         this.name = fileName;
 
         this.center = center;
