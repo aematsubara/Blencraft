@@ -1,8 +1,5 @@
 package me.matsubara.blencraft;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ListenerPriority;
 import com.cryptomorin.xseries.ReflectionUtils;
 import me.matsubara.blencraft.command.Main;
 import me.matsubara.blencraft.listener.InventoryClick;
@@ -30,17 +27,13 @@ public final class BlencraftPlugin extends JavaPlugin {
             return;
         }
 
-        // Classes that contains protocol and bukkit listeners.
-        PlayerInteractUseEntity interactUse = new PlayerInteractUseEntity(this);
-
-        // Register protocol events.
-        ProtocolLibrary.getProtocolManager().addPacketListener(new SteerVehicle(this, ListenerPriority.MONITOR, PacketType.Play.Client.STEER_VEHICLE));
-        ProtocolLibrary.getProtocolManager().addPacketListener(interactUse);
-
         // Register bukkit events.
         getServer().getPluginManager().registerEvents(new InventoryClick(this), this);
         getServer().getPluginManager().registerEvents(new InventoryClose(this), this);
-        getServer().getPluginManager().registerEvents(interactUse, this);
+        getServer().getPluginManager().registerEvents(new PlayerInteractUseEntity(this), this);
+
+        // Register packet events.
+        new SteerVehicle(this);
 
         // Register main command.
         PluginCommand mainCommand = getCommand("blencraft");

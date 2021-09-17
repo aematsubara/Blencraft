@@ -1,16 +1,19 @@
 package me.matsubara.blencraft.manager;
 
-import me.matsubara.blencraft.BlencraftPlugin;
 import me.matsubara.blencraft.model.Model;
+import me.matsubara.blencraft.BlencraftPlugin;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 
 public final class ModelManager {
 
@@ -68,5 +71,41 @@ public final class ModelManager {
 
     public String getModelFolder() {
         return plugin.getDataFolder() + File.separator + "models";
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void saveToModels(@NotNull JavaPlugin resourcePlugin, @NotNull String resourcePath) {
+        if (resourcePath.equals("")) {
+            throw new IllegalArgumentException("Resource path cannot be null or empty.");
+        }
+
+        resourcePath = resourcePath.replace('\\', '/');
+        InputStream inputStream = resourcePlugin.getResource(resourcePath);
+        if (inputStream == null) {
+            throw new IllegalArgumentException("The embedded resource '" + resourcePath + "' cannot be found.");
+        }
+
+        File outFile = new File(getModelFolder(), resourcePath);
+        int lastIndex = resourcePath.lastIndexOf('/');
+        File outDir = new File(getModelFolder(), resourcePath.substring(0, Math.max(lastIndex, 0)));
+
+        if (!outDir.exists()) {
+            outDir.mkdirs();
+        }
+
+        if (outFile.exists()) return;
+
+        try {
+            OutputStream outputStream = new FileOutputStream(outFile);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, len);
+            }
+            outputStream.close();
+            inputStream.close();
+        } catch (IOException exception) {
+            plugin.getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, exception);
+        }
     }
 }

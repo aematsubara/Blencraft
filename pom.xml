@@ -42,7 +42,23 @@
                 <configuration>
                     <relocations>
                         <relocation>
+                            <pattern>net.wesjd</pattern>
+                            <shadedPattern>me.matsubara.blencraft.util</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>io.github.bananapuncher714</pattern>
+                            <shadedPattern>me.matsubara.blencraft.util</shadedPattern>
+                        </relocation>
+                        <relocation>
                             <pattern>com.cryptomorin</pattern>
+                            <shadedPattern>me.matsubara.blencraft.util</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.intellij.lang</pattern>
+                            <shadedPattern>me.matsubara.blencraft.util</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.jetbrains</pattern>
                             <shadedPattern>me.matsubara.blencraft.util</shadedPattern>
                         </relocation>
                     </relocations>
@@ -92,10 +108,10 @@
             <id>codemc-snapshots</id>
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
-        <!-- for ProtocolLib -->
+        <!-- for NBTEditor -->
         <repository>
-            <id>dmulloy2-repo</id>
-            <url>https://repo.dmulloy2.net/repository/public/</url>
+            <id>CodeMC</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
         </repository>
     </repositories>
 
@@ -113,12 +129,11 @@
             <artifactId>anvilgui</artifactId>
             <version>1.5.3-SNAPSHOT</version>
         </dependency>
-        <!-- ProtocolLib -->
+        <!-- NBTEditor -->
         <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>4.7.0</version>
-            <scope>provided</scope>
+            <groupId>io.github.bananapuncher714</groupId>
+            <artifactId>nbteditor</artifactId>
+            <version>7.17.0</version>
         </dependency>
         <!-- XSeries -->
         <dependency>

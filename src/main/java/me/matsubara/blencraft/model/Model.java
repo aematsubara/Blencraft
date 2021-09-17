@@ -7,7 +7,7 @@ import me.matsubara.blencraft.command.Main;
 import me.matsubara.blencraft.model.stand.StandSettings;
 import me.matsubara.blencraft.stand.PacketStand;
 import me.matsubara.blencraft.util.PluginUtils;
-import me.matsubara.blencraft.util.RotationType;
+import me.matsubara.blencraft.stand.RotationType;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -34,7 +34,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public final class Model {

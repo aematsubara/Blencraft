@@ -1,8 +1,7 @@
-package me.matsubara.blencraft.util;
+package me.matsubara.blencraft.stand;
 
 import me.matsubara.blencraft.model.Model;
 import me.matsubara.blencraft.model.stand.StandSettings;
-import me.matsubara.blencraft.stand.PacketStand;
 import org.bukkit.util.EulerAngle;
 import org.jetbrains.annotations.NotNull;
 

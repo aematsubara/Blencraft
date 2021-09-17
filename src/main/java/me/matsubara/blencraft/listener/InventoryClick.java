@@ -1,13 +1,13 @@
 package me.matsubara.blencraft.listener;
 
 import com.cryptomorin.xseries.XSound;
+import io.github.bananapuncher714.nbteditor.NBTEditor;
 import me.matsubara.blencraft.BlencraftPlugin;
 import me.matsubara.blencraft.gui.EquipmentGUI;
 import me.matsubara.blencraft.gui.GUI;
 import me.matsubara.blencraft.gui.SettingsGUI;
 import me.matsubara.blencraft.model.Model;
 import me.matsubara.blencraft.stand.PacketStand;
-import me.matsubara.blencraft.util.NBTEditor;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
