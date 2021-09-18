@@ -1,7 +1,11 @@
 package me.matsubara.blencraft.listener.both;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.cryptomorin.xseries.ReflectionUtils;
-import io.netty.channel.Channel;
 import me.matsubara.blencraft.BlencraftPlugin;
 import me.matsubara.blencraft.command.Main;
 import me.matsubara.blencraft.event.PlayerInteractPacketEvent;
@@ -9,8 +13,6 @@ import me.matsubara.blencraft.gui.GUI;
 import me.matsubara.blencraft.model.Model;
 import me.matsubara.blencraft.model.stand.StandSettings;
 import me.matsubara.blencraft.stand.PacketStand;
-import me.matsubara.blencraft.util.tinyprotocol.Reflection;
-import me.matsubara.blencraft.util.tinyprotocol.TinyProtocol;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,61 +26,61 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public final class PlayerInteractUseEntity extends TinyProtocol implements Listener {
+public final class PlayerInteractUseEntity extends PacketAdapter implements Listener {
 
     private final BlencraftPlugin plugin;
 
-    private final Class<?> USE_ENTITY = ReflectionUtils.getNMSClass("network.protocol.game", "PacketPlayInUseEntity");
-    private final Class<?> USE_ACTION = ReflectionUtils.getNMSClass("network.protocol.game", "PacketPlayInUseEntity$EnumEntityUseAction");
-
-    private final Reflection.FieldAccessor<Integer> entityIdField = Reflection.getField(USE_ENTITY, int.class, 0);
-    private final Reflection.FieldAccessor<?> actionField = Reflection.getField(USE_ENTITY, USE_ACTION, 0);
-
     public PlayerInteractUseEntity(BlencraftPlugin plugin) {
-        super(plugin);
+        super(plugin, ListenerPriority.HIGHEST, PacketType.Play.Client.USE_ENTITY);
         this.plugin = plugin;
     }
 
     @Override
-    public Object onPacketInAsync(Player sender, Channel channel, Object packet) {
-        if (!USE_ENTITY.isInstance(packet)) return super.onPacketInAsync(sender, channel, packet);
+    public void onPacketReceiving(PacketEvent event) {
+        int entityId = event.getPacket().getIntegers().readSafely(0);
 
-        int entityId = entityIdField.get(packet);
-        boolean isLeft = actionField.get(packet).toString().equalsIgnoreCase("ATTACK");
+        EnumWrappers.EntityUseAction action;
+        if (ReflectionUtils.VER > 16) {
+            action = event.getPacket().getEnumEntityUseActions().readSafely(0).getAction();
+        } else {
+            action = event.getPacket().getEntityUseActions().readSafely(0);
+        }
+
+        boolean isLeft = action == EnumWrappers.EntityUseAction.ATTACK;
+
+        Player player = event.getPlayer();
 
         // Only call interact packet event if the player isn't building.
-        if (!plugin.getModelManager().isBuilding(sender)) {
+        if (!plugin.getModelManager().isBuilding(player)) {
 
             for (Model model : plugin.getModelManager().getModels()) {
                 PacketStand stand = model.getById(entityId);
                 if (stand == null) continue;
 
                 PlayerInteractPacketEvent interactEvent = new PlayerInteractPacketEvent(
-                        sender,
+                        player,
                         stand,
                         model,
                         PlayerInteractPacketEvent.InteractType.getByBoolean(isLeft));
 
                 plugin.getServer().getPluginManager().callEvent(interactEvent);
-                return null;
+                return;
             }
 
-            return null;
+            return;
         }
 
-        Model model = plugin.getModelManager().getModel(sender);
-        if (model == null) return null;
-        if (model.getById(entityId) == null) return null;
+        Model model = plugin.getModelManager().getModel(player);
+        if (model == null) return;
+        if (model.getById(entityId) == null) return;
 
         // For some reason, when left cliking a packet entity calls PlayerInteractEvent, but not when right cliking.
-        if (isLeft) return null;
+        if (isLeft) return;
 
-        @SuppressWarnings("deprecation") ItemStack item = sender.getItemInHand();
-        if (item.getType() == Material.AIR) return null;
+        @SuppressWarnings("deprecation") ItemStack item = player.getItemInHand();
+        if (item.getType() == Material.AIR) return;
 
         handle(null, model, item, false);
-
-        return null;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

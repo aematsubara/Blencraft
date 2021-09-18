@@ -4,6 +4,8 @@ main: me.matsubara.blencraft.BlencraftPlugin
 api-version: 1.13
 author: Matsubara
 description: Create 3D models using armor stands.
+depend:
+  - ProtocolLib
 
 commands:
   blencraft:

@@ -189,7 +189,7 @@ public final class Main implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
-            return StringUtil.copyPartialMatches(args[0], Arrays.asList("create", "save", "reload", "leave", "load"), new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[0], Arrays.asList("create", "save", "reload", "leave", "load", "items", "head", "heads"), new ArrayList<>());
         } else if (args.length == 2 && args[0].equalsIgnoreCase("load")) {
             return StringUtil.copyPartialMatches(args[1], getModelList(), new ArrayList<>());
         }

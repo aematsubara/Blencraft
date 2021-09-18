@@ -53,20 +53,31 @@
                             <pattern>com.cryptomorin</pattern>
                             <shadedPattern>me.matsubara.blencraft.util</shadedPattern>
                         </relocation>
-                        <relocation>
-                            <pattern>org.intellij.lang</pattern>
-                            <shadedPattern>me.matsubara.blencraft.util</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.jetbrains</pattern>
-                            <shadedPattern>me.matsubara.blencraft.util</shadedPattern>
-                        </relocation>
                     </relocations>
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
                             <excludes>
                                 <exclude>META-INF/*.MF</exclude>
+                                <!-- Exclude unused XSeries utilities. -->
+                                <exclude>com/cryptomorin/xseries/XBiome*</exclude>
+                                <exclude>com/cryptomorin/xseries/NMSExtras*</exclude>
+                                <exclude>com/cryptomorin/xseries/NoteBlockMusic*</exclude>
+                                <exclude>com/cryptomorin/xseries/XBlock*</exclude>
+                                <exclude>com/cryptomorin/xseries/XEnchantment*</exclude>
+                                <exclude>com/cryptomorin/xseries/XSound*</exclude>
+                                <exclude>com/cryptomorin/xseries/XPotion*</exclude>
+                                <exclude>com/cryptomorin/xseries/XItemStack*</exclude>
+                                <exclude>com/cryptomorin/xseries/XEntity*</exclude>
+                                <!-- Exclude unused AnvilGUI wrappers. -->
+                                <exclude>net/wesjd/anvilgui/version/Wrapper1_7_R4*</exclude>
+                                <exclude>net/wesjd/anvilgui/version/Wrapper1_8_R1*</exclude>
+                                <exclude>net/wesjd/anvilgui/version/Wrapper1_8_R2*</exclude>
+                                <exclude>net/wesjd/anvilgui/version/Wrapper1_8_R3*</exclude>
+                                <exclude>net/wesjd/anvilgui/version/Wrapper1_9_R1*</exclude>
+                                <exclude>net/wesjd/anvilgui/version/Wrapper1_9_R2*</exclude>
+                                <exclude>net/wesjd/anvilgui/version/Wrapper1_10_R1*</exclude>
+                                <exclude>net/wesjd/anvilgui/version/Wrapper1_11_R1*</exclude>
                             </excludes>
                         </filter>
                     </filters>
@@ -113,10 +124,10 @@
             <id>CodeMC</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
         </repository>
-        <!-- for AuthLib -->
+        <!-- for ProtocolLib -->
         <repository>
-            <id>minecraft-repo</id>
-            <url>https://libraries.minecraft.net/</url>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
     </repositories>
 
@@ -140,11 +151,11 @@
             <artifactId>nbteditor</artifactId>
             <version>7.17.0</version>
         </dependency>
-        <!-- AuthLib -->
+        <!-- ProtocolLib -->
         <dependency>
-            <groupId>com.mojang</groupId>
-            <artifactId>authlib</artifactId>
-            <version>1.5.21</version>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.7.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- XSeries -->
@@ -158,12 +169,6 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>22.0.0</version>
-        </dependency>
-        <!-- Netty -->
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.0.23.Final</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
